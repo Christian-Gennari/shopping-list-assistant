@@ -384,3 +384,67 @@ body {
 .pantry-btn.delete:hover {
   background: #9c2c2c;
 }
+
+/* === HISTORY VIEW === */
+.history-list {
+  margin-top: 32px;
+  padding: 32px;
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+}
+
+.history-empty {
+  color: var(--text-light);
+  font-size: 0.95rem;
+  padding: 8px 0;
+}
+
+/* Each entry */
+.history-entry {
+  padding: 20px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.history-entry:last-child {
+  border-bottom: none;
+}
+
+/* Timestamp */
+.history-entry h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+  letter-spacing: -0.3px;
+}
+
+/* Items list */
+.history-entry ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+  margin-top: 10px;
+}
+
+.history-entry li {
+  font-size: 0.95rem;
+  color: var(--text-light);
+  padding: 4px 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Item name + quantity */
+.history-item-name {
+  color: var(--text);
+  font-weight: 500;
+}
+
+/* Price badge */
+.history-item-price {
+  color: var(--accent);
+  font-weight: 600;
+  margin-left: 12px;
+}

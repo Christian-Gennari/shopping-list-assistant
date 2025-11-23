@@ -18,9 +18,14 @@
       <h2 class="logo">GrocerAI</h2>
 
       <nav>
-        <a href="#" class="active">
-          <i class="fas fa-home"></i>
-          <span>Pantry</span>
+        <a href="#" class="active" data-view="dashboard">
+          <i class="fas fa-chart-line"></i>
+          <span>Dashboard</span>
+        </a>
+
+        <a href="#" data-view="history">
+          <i class="fas fa-clock-rotate-left"></i>
+          <span>History</span>
         </a>
       </nav>
     </aside>
@@ -28,32 +33,45 @@
     <!-- Main Content -->
     <main class="content">
 
-      <div class="content-header">
-        <h1>Your Pantry</h1>
-        <p class="subtitle">Manage items and import new orders</p>
-      </div>
+      <!-- DASHBOARD VIEW -->
+      <section class="view" data-view="dashboard">
 
-      <!-- Pantry List -->
-      <section class="pantry-section">
-        <h2>Current Items</h2>
-        <div id="pantry-items" class="pantry-list"></div>
+        <div class="content-header">
+          <h1>Your Pantry</h1>
+          <p class="subtitle">Manage items and import new orders</p>
+        </div>
+
+        <!-- Pantry List -->
+        <section class="pantry-section">
+          <h2>Current Items</h2>
+          <div id="pantry-items" class="pantry-list"></div>
+        </section>
+
+        <!-- Import Section -->
+        <section class="import-section">
+          <h2>Import Foodora Checkout</h2>
+          <p class="subtitle">Paste your checkout page HTML below</p>
+
+          <textarea id="htmlInput" placeholder="Paste Foodora HTML here..."></textarea>
+
+          <button id="parseButton" class="parse-btn">Parse Items</button>
+
+          <div id="parsed-results" class="results"></div>
+
+          <div class="import-export-container">
+            <button id="exportBtn" class="parse-btn">Export Pantry</button>
+            <input type="file" id="importFile" accept=".json">
+          </div>
+        </section>
+
       </section>
 
-      <!-- Import Section -->
-      <section class="import-section">
-        <h2>Import Foodora Checkout</h2>
-        <p class="subtitle">Paste your checkout page HTML below</p>
+      <!-- HISTORY VIEW -->
+      <section class="view hidden" data-view="history">
+        <h1>Purchase History</h1>
+        <p class="subtitle">Your past imported Foodora orders</p>
 
-        <textarea id="htmlInput" placeholder="Paste Foodora HTML here..."></textarea>
-
-        <button id="parseButton" class="parse-btn">Parse Items</button>
-
-        <div id="parsed-results" class="results"></div>
-
-        <div class="import-export-container">
-          <button id="exportBtn" class="parse-btn">Export Pantry</button>
-          <input type="file" id="importFile" accept=".json">
-        </div>
+        <div id="history-list" class="history-list"></div>
       </section>
 
     </main>

@@ -9,7 +9,13 @@ import {
   importPantryJson,
 } from "./data/pantry";
 
-import { displayParsedResults, displayPantry } from "./ui/renderer";
+import { addPurchaseEntry, loadPurchaseHistory } from "./data/purchaseHistory";
+
+import {
+  displayParsedResults,
+  displayPantry,
+  displayHistory,
+} from "./ui/renderer";
 
 import {
   parseButton,
@@ -19,6 +25,40 @@ import {
 } from "./ui/elements";
 
 console.log("GrocerAI App Loaded");
+
+/* ------------------------------------------
+   Sidebar view switching
+------------------------------------------- */
+document.querySelectorAll(".sidebar a").forEach((link) => {
+  link.addEventListener("click", (e) => {
+    e.preventDefault();
+
+    const view = link.getAttribute("data-view");
+    if (!view) return;
+
+    // Update active tab
+    document
+      .querySelectorAll(".sidebar a")
+      .forEach((a) => a.classList.remove("active"));
+    link.classList.add("active");
+
+    // Hide all views
+    document
+      .querySelectorAll(".view")
+      .forEach((section) => section.classList.add("hidden"));
+
+    // Show selected view
+    document
+      .querySelector(`.view[data-view="${view}"]`)
+      ?.classList.remove("hidden");
+
+    // Load history on switch
+    if (view === "history") {
+      const entries = loadPurchaseHistory();
+      displayHistory(entries);
+    }
+  });
+});
 
 /* ------------------------------------------
    Initial render
@@ -38,6 +78,8 @@ parseButton.addEventListener("click", () => {
   const parsedItems = parseFoodoraHtml(html);
 
   mergeIntoPantry(parsedItems);
+  addPurchaseEntry(parsedItems, "foodora");
+
   displayParsedResults(parsedItems);
   displayPantry(pantry.items);
 });

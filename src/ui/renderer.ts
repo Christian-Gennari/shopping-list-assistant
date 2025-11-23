@@ -87,3 +87,41 @@ export function displayPantry(items: PantryItem[]) {
     list.appendChild(row);
   });
 }
+
+import type { PurchaseEntry } from "../data/purchaseHistory";
+
+export function displayHistory(entries: PurchaseEntry[]) {
+  const container = document.getElementById("history-list");
+  if (!container) return;
+
+  if (entries.length === 0) {
+    container.innerHTML = `<p class="history-empty">No history recorded yet.</p>`;
+    return;
+  }
+
+  container.innerHTML = entries
+    .map((entry) => {
+      const date = new Date(entry.timestamp).toLocaleString("sv-SE");
+
+      const items = entry.items
+        .map(
+          (i) => `
+            <li>
+              <span class="history-item-name">${i.qty}× ${i.name}</span>
+              <span class="history-item-price">
+                ${i.price ? i.price + " kr" : ""}
+              </span>
+            </li>
+          `
+        )
+        .join("");
+
+      return `
+        <div class="history-entry">
+          <h3>${date}</h3>
+          <ul>${items}</ul>
+        </div>
+      `;
+    })
+    .join("");
+}
