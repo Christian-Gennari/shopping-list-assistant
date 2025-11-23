@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GrocerAI – Your Shopping Companion</title>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="src/style.css">
+
+  <!-- Icons (optional, but your HTML references font-awesome icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+  <div class="app-layout">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <h2 class="logo">GrocerAI</h2>
+
+      <nav>
+        <a href="#" class="active">
+          <i class="fas fa-chart-line"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="#">
+          <i class="fas fa-box-open"></i>
+          <span>My Items</span>
+        </a>
+        <a href="#">
+          <i class="fas fa-utensils"></i>
+          <span>Recipe Builder</span>
+        </a>
+        <a href="#">
+          <i class="fas fa-list-check"></i>
+          <span>Shopping List</span>
+        </a>
+        <a href="#">
+          <i class="fas fa-cog"></i>
+          <span>Settings</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="content">
+
+      <!-- Header -->
+      <div class="content-header">
+        <h1>Your Pantry Overview</h1>
+        <p class="subtitle">Track, plan, and optimize your grocery shopping</p>
+      </div>
+
+      <!-- Dashboard Cards -->
+      <div class="cards">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon"><i class="fas fa-star"></i></div>
+            <h3>Most Bought Items</h3>
+          </div>
+          <p>Spinach, Mozzarella, Chickpeas, Olive Oil, Pasta</p>
+          <span class="card-badge">Top 5</span>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon"><i class="fas fa-lightbulb"></i></div>
+            <h3>Suggested Additions</h3>
+          </div>
+          <p>Based on your cooking patterns, you might want garlic, tomato sauce, and basil.</p>
+          <span class="card-badge">3 items</span>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon"><i class="fas fa-fire"></i></div>
+            <h3>Recipe Matches</h3>
+          </div>
+          <p>You can make 2 delicious recipes with what you have right now.</p>
+          <span class="card-badge">Ready to cook</span>
+        </div>
+      </div>
+
+      <!-- === PANTRY LIST SECTION === -->
+      <section class="pantry-section">
+        <h2>Your Items</h2>
+        <div id="pantry-items" class="pantry-list"></div>
+      </section>
+
+      <!-- === IMPORT SECTION === -->
+      <section class="import-section">
+        <h2>Import Foodora Checkout</h2>
+        <p class="subtitle">Paste your checkout page HTML below</p>
+
+        <textarea id="htmlInput" placeholder="Paste Foodora HTML here..."></textarea>
+
+        <button id="parseButton" class="parse-btn">Parse Items</button>
+
+        <!-- Recent parsed results -->
+        <div id="parsed-results" class="results"></div>
+
+        <!-- Export / Import Buttons -->
+        <div class="import-export-container">
+          <button id="exportBtn" class="parse-btn">Export Pantry</button>
+          <input type="file" id="importFile" accept=".json">
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Main app script -->
+  <script type="module" src="/src/main.ts"></script>
+
+</body>
+
+</html>
