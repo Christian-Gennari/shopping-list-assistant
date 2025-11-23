@@ -231,3 +231,63 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ============================================================
+   FULLSCREEN MODAL
+============================================================ */
+.ai-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  z-index: 9999;
+}
+
+.ai-modal.hidden {
+  display: none;
+}
+
+.ai-modal-content {
+  background: var(--card-bg);
+  width: min(900px, 95%);
+  height: min(90vh, 900px);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+}
+
+.ai-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.ai-modal-close-btn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: var(--text-light);
+  transition: color 0.2s ease;
+}
+
+.ai-modal-close-btn:hover {
+  color: var(--text);
+}
+
+#ai-modal-chat {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.ai-modal-input {
+  margin-top: 16px;
+}

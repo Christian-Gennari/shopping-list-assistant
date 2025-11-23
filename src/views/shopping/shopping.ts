@@ -74,50 +74,91 @@ function setupAIChat() {
   const chat = document.getElementById("ai-chat")!;
   const input = document.getElementById("ai-input") as HTMLInputElement;
   const send = document.getElementById("ai-send") as HTMLButtonElement;
-  const clear = document.getElementById("ai-clear") as HTMLButtonElement | null;
+  const clear = document.getElementById("ai-clear") as HTMLButtonElement;
+
+  // FULLSCREEN ELEMENTS
+  const modal = document.getElementById("ai-modal")!;
+  const modalChat = document.getElementById("ai-modal-chat")!;
+  const modalInput = document.getElementById(
+    "ai-modal-input"
+  ) as HTMLInputElement;
+  const modalSend = document.getElementById(
+    "ai-modal-send"
+  ) as HTMLButtonElement;
+  const modalClose = document.getElementById("ai-modal-close")!;
+  const expandBtn = document.getElementById("ai-fullscreen")!;
 
   let loadingEl: HTMLDivElement | null = null;
 
-  clear?.addEventListener("click", () => {
-    chat.innerHTML = "";
-  });
+  /* ------------------------------------------
+     Helper: attach suggestion click events
+  ------------------------------------------ */
+  function attachInlineSuggestionHandlers(root: HTMLElement) {
+    root.querySelectorAll(".ai-inline-suggestion").forEach((el) => {
+      el.addEventListener("click", () => {
+        const name = (el as HTMLElement).dataset.item!;
+        addItemToShoppingList(name, "ai");
+        renderFinalList();
+      });
+    });
+  }
 
-  async function sendMessage() {
-    const text = input.value.trim();
-    if (!text || send.disabled) return;
+  /* ------------------------------------------
+     APPEND USER MESSAGE
+  ------------------------------------------ */
+  function appendUserMessage(msg: string) {
+    const div = document.createElement("div");
+    div.className = "ai-message user";
+    div.textContent = msg;
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
 
-    appendUserMessage(text);
-    input.value = "";
-    setLoading(true);
-
-    const pantry = loadPantry().items;
-    const history = loadPurchaseHistory();
-
-    let reply: string | null = null;
-
-    try {
-      reply = await getChatReply(text, pantry, history, preferences);
-    } catch (err) {
-      console.error(err);
-      appendAssistantMessage("[Error] Unable to reach AI.");
-    } finally {
-      setLoading(false);
-    }
-
-    if (reply) {
-      appendAssistantMessage(reply);
+    // Also append to modal if open
+    if (!modal.classList.contains("hidden")) {
+      const copy = div.cloneNode(true) as HTMLElement;
+      modalChat.appendChild(copy);
+      modalChat.scrollTop = modalChat.scrollHeight;
     }
   }
 
-  send.addEventListener("click", () => void sendMessage());
+  /* ------------------------------------------
+     APPEND ASSISTANT MESSAGE
+  ------------------------------------------ */
+  async function appendAssistantMessage(msg: string) {
+    const div = document.createElement("div");
+    div.className = "ai-message assistant";
 
-  input.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      void sendMessage();
+    // Markdown → HTML
+    let html = await markdownToHtml(msg);
+
+    // Replace [item] → clickable
+    html = html.replace(/\[([^\]]+)\]/g, (_, itemName: string) => {
+      return `
+        <span class="ai-inline-suggestion" data-item="${itemName}">
+          ${itemName}
+        </span>
+      `;
+    });
+
+    div.innerHTML = html;
+    chat.appendChild(div);
+    attachInlineSuggestionHandlers(div);
+    chat.scrollTop = chat.scrollHeight;
+
+    // Also mirror into modal if open
+    if (!modal.classList.contains("hidden")) {
+      const modalDiv = document.createElement("div");
+      modalDiv.className = "ai-message assistant";
+      modalDiv.innerHTML = html;
+      modalChat.appendChild(modalDiv);
+      attachInlineSuggestionHandlers(modalDiv);
+      modalChat.scrollTop = modalChat.scrollHeight;
     }
-  });
+  }
 
+  /* ------------------------------------------
+     LOADING INDICATOR
+  ------------------------------------------ */
   function setLoading(on: boolean) {
     if (on) {
       send.disabled = true;
@@ -139,54 +180,80 @@ function setupAIChat() {
       send.disabled = false;
       input.disabled = false;
 
-      if (loadingEl && loadingEl.parentElement) {
+      if (loadingEl?.parentElement) {
         loadingEl.parentElement.removeChild(loadingEl);
       }
       loadingEl = null;
     }
   }
 
-  function appendUserMessage(msg: string) {
-    const div = document.createElement("div");
-    div.className = "ai-message user";
-    div.textContent = msg;
-    chat.appendChild(div);
-    chat.scrollTop = chat.scrollHeight;
+  /* ------------------------------------------
+     SEND MESSAGE LOGIC
+  ------------------------------------------ */
+  async function sendMessage() {
+    const text = input.value.trim();
+    if (!text || send.disabled) return;
+
+    appendUserMessage(text);
+    input.value = "";
+    setLoading(true);
+
+    const pantry = loadPantry().items;
+    const history = loadPurchaseHistory();
+
+    try {
+      const reply = await getChatReply(text, pantry, history, preferences);
+      await appendAssistantMessage(reply);
+    } catch (err) {
+      console.error(err);
+      await appendAssistantMessage("[Error] Unable to reach AI.");
+    } finally {
+      setLoading(false);
+    }
   }
 
-  /* -----------------------------------------
-     FORMATTED ASSISTANT MESSAGES
-  ----------------------------------------- */
-  async function appendAssistantMessage(msg: string) {
-    const div = document.createElement("div");
-    div.className = "ai-message assistant";
+  send.addEventListener("click", () => void sendMessage());
 
-    // 1. Convert Markdown → HTML
-    let html: string = await markdownToHtml(msg);
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      void sendMessage();
+    }
+  });
 
-    // 2. Replace [item] brackets → inline clickable suggestions
-    html = html.replace(/\[([^\]]+)\]/g, (_: string, itemName: string) => {
-      return `
-      <span class="ai-inline-suggestion" data-item="${itemName}">
-        ${itemName}
-      </span>
-    `;
-    });
+  clear.addEventListener("click", () => {
+    chat.innerHTML = "";
+    modalChat.innerHTML = "";
+  });
 
-    // 3. Insert HTML
-    div.innerHTML = html;
-    chat.appendChild(div);
-    chat.scrollTop = chat.scrollHeight;
+  /* ------------------------------------------
+     FULLSCREEN MODE
+  ------------------------------------------ */
 
-    // 4. Attach click handlers
-    div.querySelectorAll(".ai-inline-suggestion").forEach((el) => {
-      el.addEventListener("click", () => {
-        const name = (el as HTMLElement).dataset.item!;
-        addItemToShoppingList(name, "ai");
-        renderFinalList();
-      });
-    });
-  }
+  expandBtn.addEventListener("click", () => {
+    // Clone content
+    modalChat.innerHTML = chat.innerHTML;
+
+    // Reattach handlers inside modal
+    attachInlineSuggestionHandlers(modalChat);
+
+    modal.classList.remove("hidden");
+    modalInput.focus();
+  });
+
+  modalClose.addEventListener("click", () => {
+    modal.classList.add("hidden");
+  });
+
+  modalSend.addEventListener("click", () => {
+    const txt = modalInput.value.trim();
+    if (!txt) return;
+
+    appendUserMessage(txt);
+    input.value = txt; // forward to main input
+    modalInput.value = "";
+    send.click();
+  });
 }
 
 /* -----------------------------------------------

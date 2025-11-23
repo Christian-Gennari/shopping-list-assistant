@@ -25,10 +25,17 @@
     <section class="shopping-source card-surface">
       <div class="ai-header-row">
         <h2>AI Shopping Assistant</h2>
-        <button id="ai-clear" class="ai-clear-btn" type="button">
-          <i class="fas fa-broom"></i>
-          <span>Clear</span>
-        </button>
+        <div class="ai-header-actions">
+          <button id="ai-fullscreen" class="ai-clear-btn" type="button">
+            <i class="fas fa-up-right-and-down-left-from-center"></i>
+            <span>Expand</span>
+          </button>
+
+          <button id="ai-clear" class="ai-clear-btn" type="button">
+            <i class="fas fa-broom"></i>
+            <span>Clear</span>
+          </button>
+        </div>
       </div>
 
       <div id="ai-chat" class="ai-chat-window"></div>
@@ -48,5 +55,23 @@
         <button id="copy-shopping" class="parse-btn">Copy to Clipboard</button>
       </div>
     </section>
+  </div>
+</div>
+
+<div id="ai-modal" class="ai-modal hidden">
+  <div class="ai-modal-content">
+    <div class="ai-modal-header">
+      <h2>AI Shopping Assistant</h2>
+      <button id="ai-modal-close" class="ai-modal-close-btn">
+        <i class="fas fa-down-left-and-up-right-to-center"></i>
+      </button>
+    </div>
+
+    <div id="ai-modal-chat" class="ai-chat-window"></div>
+
+    <div class="ai-input-row ai-modal-input">
+      <input id="ai-modal-input" type="text" placeholder="Ask the assistant...">
+      <button id="ai-modal-send" class="parse-btn">Send</button>
+    </div>
   </div>
 </div>
