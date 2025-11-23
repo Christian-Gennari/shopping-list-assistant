@@ -3,6 +3,7 @@ import "./shopping.css";
 import { loadPantry } from "../../data/pantry";
 import { loadPurchaseHistory } from "../../data/purchaseHistory";
 import { preferences } from "../../data/preferences";
+import { markdownToHtml } from "../../services/markdownParser";
 import {
   loadShoppingList,
   addItemToShoppingList,
@@ -156,12 +157,15 @@ function setupAIChat() {
   /* -----------------------------------------
      FORMATTED ASSISTANT MESSAGES
   ----------------------------------------- */
-  function appendAssistantMessage(msg: string) {
+  async function appendAssistantMessage(msg: string) {
     const div = document.createElement("div");
     div.className = "ai-message assistant";
 
-    // Replace [item] → inline clickable highlighted item
-    const html = msg.replace(/\[([^\]]+)\]/g, (_, itemName) => {
+    // 1. Convert Markdown → HTML
+    let html: string = await markdownToHtml(msg);
+
+    // 2. Replace [item] brackets → inline clickable suggestions
+    html = html.replace(/\[([^\]]+)\]/g, (_: string, itemName: string) => {
       return `
       <span class="ai-inline-suggestion" data-item="${itemName}">
         ${itemName}
@@ -169,11 +173,12 @@ function setupAIChat() {
     `;
     });
 
+    // 3. Insert HTML
     div.innerHTML = html;
     chat.appendChild(div);
     chat.scrollTop = chat.scrollHeight;
 
-    // Add click handler for each suggestion
+    // 4. Attach click handlers
     div.querySelectorAll(".ai-inline-suggestion").forEach((el) => {
       el.addEventListener("click", () => {
         const name = (el as HTMLElement).dataset.item!;
