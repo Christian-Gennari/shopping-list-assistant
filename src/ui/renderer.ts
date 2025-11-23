@@ -1,6 +1,25 @@
-// --------------------------------------------------------
-// Display results from the *most recent* parse
-// --------------------------------------------------------
+// FILE: src/ui/renderer.ts
+
+import type { PantryItem } from "../data/types";
+import {
+  pantry,
+  increaseItem,
+  decreaseItem,
+  deleteItem,
+  loadPantry,
+} from "../data/pantry";
+
+/* ------------------------------------------
+   Refresh pantry after changes
+------------------------------------------- */
+export function refreshPantryUI() {
+  const fresh = loadPantry();
+  displayPantry(fresh.items);
+}
+
+/* ------------------------------------------
+   Display parsed Foodora items
+------------------------------------------- */
 export function displayParsedResults(parsed: any[]) {
   const container = document.getElementById("parsed-results");
   if (!container) return;
@@ -9,10 +28,10 @@ export function displayParsedResults(parsed: any[]) {
     <h3>Parsed Items (${parsed.length})</h3>
     ${parsed
       .map(
-        (i) => `
+        (item) => `
         <div class="parsed-item">
-          <strong>${i.qty}× ${i.name}</strong><br>
-          <span>${i.price}</span>
+          <strong>${item.qty}× ${item.name}</strong><br>
+          <span>${item.price}</span>
         </div>
       `
       )
@@ -20,27 +39,14 @@ export function displayParsedResults(parsed: any[]) {
   `;
 }
 
-// --------------------------------------------------------
-// Display the *entire pantry*
-// --------------------------------------------------------
-import type { PantryItem } from "../data/types";
-import {
-  loadPantry,
-  increaseItem,
-  decreaseItem,
-  deleteItem,
-} from "../data/pantry";
-
-export function refreshPantryUI() {
-  const fresh = loadPantry();
-  displayPantry(fresh.items);
-}
-
+/* ------------------------------------------
+   Display entire pantry
+------------------------------------------- */
 export function displayPantry(items: PantryItem[]) {
   const list = document.getElementById("pantry-items");
   if (!list) return;
 
-  list.innerHTML = ""; // clear list
+  list.innerHTML = "";
 
   items.forEach((item) => {
     const row = document.createElement("div");
@@ -59,19 +65,19 @@ export function displayPantry(items: PantryItem[]) {
       </div>
     `;
 
-    // Button: increase item
+    // Increase
     row.querySelector("[data-action='inc']")?.addEventListener("click", () => {
       increaseItem(item.name);
       refreshPantryUI();
     });
 
-    // Button: decrease item
+    // Decrease
     row.querySelector("[data-action='dec']")?.addEventListener("click", () => {
       decreaseItem(item.name);
       refreshPantryUI();
     });
 
-    // Button: delete item
+    // Delete
     row.querySelector("[data-action='del']")?.addEventListener("click", () => {
       deleteItem(item.name);
       refreshPantryUI();

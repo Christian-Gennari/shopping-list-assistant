@@ -1,8 +1,9 @@
+// FILE: src/main.ts
+
 import { parseFoodoraHtml } from "./parsing/foodoraParser";
 
 import {
   pantry,
-  loadPantry,
   mergeIntoPantry,
   exportPantry,
   importPantryJson,
@@ -19,14 +20,14 @@ import {
 
 console.log("GrocerAI App Loaded");
 
-// --------------------------------------------------------
-// INITIAL RENDER
-// --------------------------------------------------------
+/* ------------------------------------------
+   Initial render
+------------------------------------------- */
 displayPantry(pantry.items);
 
-// --------------------------------------------------------
-// PARSE FOODORA HTML
-// --------------------------------------------------------
+/* ------------------------------------------
+   Parse Foodora HTML
+------------------------------------------- */
 parseButton.addEventListener("click", () => {
   const html = htmlInput.value.trim();
   if (!html) {
@@ -37,15 +38,14 @@ parseButton.addEventListener("click", () => {
   const parsedItems = parseFoodoraHtml(html);
 
   mergeIntoPantry(parsedItems);
-
   displayParsedResults(parsedItems);
   displayPantry(pantry.items);
 });
 
-// --------------------------------------------------------
-// EXPORT PANTRY
-// --------------------------------------------------------
-exportBtn?.addEventListener("click", () => {
+/* ------------------------------------------
+   Export pantry
+------------------------------------------- */
+exportBtn.addEventListener("click", () => {
   const json = exportPantry();
   const blob = new Blob([json], { type: "application/json" });
 
@@ -58,10 +58,10 @@ exportBtn?.addEventListener("click", () => {
   URL.revokeObjectURL(url);
 });
 
-// --------------------------------------------------------
-// IMPORT PANTRY
-// --------------------------------------------------------
-importFileInput?.addEventListener("change", async (e) => {
+/* ------------------------------------------
+   Import pantry
+------------------------------------------- */
+importFileInput.addEventListener("change", async (e) => {
   const file = (e.target as HTMLInputElement).files?.[0];
   if (!file) return;
 
@@ -69,6 +69,5 @@ importFileInput?.addEventListener("change", async (e) => {
   importPantryJson(text);
 
   displayPantry(pantry.items);
-
-  alert("Pantry imported successfully!");
+  alert("Pantry imported successfully.");
 });

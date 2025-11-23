@@ -1,3 +1,5 @@
+// FILE: src/parsing/foodoraParser.ts
+
 export function parseFoodoraHtml(htmlString: string) {
   const parser = new DOMParser();
   const doc = parser.parseFromString(htmlString, "text/html");
@@ -6,10 +8,14 @@ export function parseFoodoraHtml(htmlString: string) {
 
   return items.map((item) => {
     const qty = item.querySelector("span")?.textContent?.trim() ?? "";
+
     const name =
       item
         .querySelector("[data-testid='cartlib-product-item'] span")
-        ?.textContent?.trim() ?? "";
+        ?.textContent?.trim() ||
+      item.querySelector(".cart-product-item-name")?.textContent?.trim() ||
+      "";
+
     const price =
       item.querySelector(".cart-product-item-price")?.textContent?.trim() ?? "";
 

@@ -1,9 +1,10 @@
+// FILE: src/data/pantry.ts
 import type { PantryItem, Pantry } from "./types";
 
 const PANTRY_KEY = "grocerai-pantry";
 
 /* ------------------------------------------
-   Load pantry from localStorage (safe)
+   Load pantry from localStorage
 ------------------------------------------- */
 export function loadPantry(): Pantry {
   try {
@@ -11,7 +12,6 @@ export function loadPantry(): Pantry {
     if (!raw) return { items: [] };
 
     const parsed = JSON.parse(raw) as Pantry;
-
     if (!parsed.items || !Array.isArray(parsed.items)) {
       return { items: [] };
     }
@@ -30,12 +30,12 @@ function savePantry(pantry: Pantry) {
 }
 
 /* ------------------------------------------
-   Exported shared pantry object
+   Shared pantry object in memory
 ------------------------------------------- */
 export const pantry: Pantry = loadPantry();
 
 /* ------------------------------------------
-   Merge parsed Foodora items into pantry
+   Merge parsed Foodora items
 ------------------------------------------- */
 export function mergeIntoPantry(
   parsed: { qty: string; name: string; price: string }[]
@@ -61,14 +61,14 @@ export function mergeIntoPantry(
 }
 
 /* ------------------------------------------
-   Export pantry to JSON string
+   Export pantry to JSON
 ------------------------------------------- */
 export function exportPantry(): string {
   return JSON.stringify(pantry, null, 2);
 }
 
 /* ------------------------------------------
-   Import JSON text into pantry
+   Import pantry from JSON
 ------------------------------------------- */
 export function importPantryJson(json: string) {
   try {
@@ -86,31 +86,37 @@ export function importPantryJson(json: string) {
   }
 }
 
+/* ------------------------------------------
+   Increase quantity
+------------------------------------------- */
 export function increaseItem(name: string) {
-  const p = loadPantry();
-  const item = p.items.find((i) => i.name === name);
+  const item = pantry.items.find((i) => i.name === name);
   if (!item) return;
 
   item.quantity++;
-  localStorage.setItem(PANTRY_KEY, JSON.stringify(p));
+  savePantry(pantry);
 }
 
+/* ------------------------------------------
+   Decrease quantity
+------------------------------------------- */
 export function decreaseItem(name: string) {
-  const p = loadPantry();
-  const item = p.items.find((i) => i.name === name);
+  const item = pantry.items.find((i) => i.name === name);
   if (!item) return;
 
   item.quantity = Math.max(0, item.quantity - 1);
 
   if (item.quantity === 0) {
-    p.items = p.items.filter((i) => i.name !== name);
+    pantry.items = pantry.items.filter((i) => i.name !== name);
   }
 
-  localStorage.setItem(PANTRY_KEY, JSON.stringify(p));
+  savePantry(pantry);
 }
 
+/* ------------------------------------------
+   Delete item
+------------------------------------------- */
 export function deleteItem(name: string) {
-  const p = loadPantry();
-  p.items = p.items.filter((i) => i.name !== name);
-  localStorage.setItem(PANTRY_KEY, JSON.stringify(p));
+  pantry.items = pantry.items.filter((i) => i.name !== name);
+  savePantry(pantry);
 }
