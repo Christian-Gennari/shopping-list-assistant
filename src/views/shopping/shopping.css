@@ -1,0 +1,59 @@
+.shopping-source {
+  margin-top: 32px;
+  padding: 32px;
+}
+
+.shopping-source h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.custom-add-row {
+  display: flex;
+  gap: 12px;
+}
+
+.custom-add-row input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+}
+
+.shopping-final {
+  margin-top: 32px;
+  padding: 32px;
+}
+
+.shopping-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.shopping-item:last-child {
+  border-bottom: none;
+}
+
+.shopping-name {
+  font-size: 1rem;
+}
+
+.shopping-qty {
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.shopping-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.shopping-actions {
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
+}

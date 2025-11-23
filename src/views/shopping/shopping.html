@@ -1,0 +1,33 @@
+<div class="content-header">
+  <h1>Shopping List</h1>
+  <p class="subtitle">Automatically generated restock + simple AI suggestions</p>
+</div>
+
+<section class="shopping-source card-surface">
+  <h2>Auto-Restock Suggestions</h2>
+  <div id="restock-list"></div>
+</section>
+
+<section class="shopping-source card-surface">
+  <h2>AI Suggestions</h2>
+  <button id="ai-generate" class="parse-btn">Generate Suggestions</button>
+  <div id="ai-list"></div>
+</section>
+
+<section class="shopping-source card-surface">
+  <h2>Add Custom Item</h2>
+  <div class="custom-add-row">
+    <input id="custom-input" type="text" placeholder="Enter item name">
+    <button id="custom-add" class="parse-btn">Add</button>
+  </div>
+</section>
+
+<section class="shopping-final card-surface">
+  <h2>Your Shopping List</h2>
+  <div id="shopping-list"></div>
+
+  <div class="shopping-actions">
+    <button id="export-shopping" class="parse-btn">Export JSON</button>
+    <button id="copy-shopping" class="parse-btn">Copy to Clipboard</button>
+  </div>
+</section>
