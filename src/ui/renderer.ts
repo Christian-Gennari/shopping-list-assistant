@@ -2,7 +2,6 @@
 
 import type { PantryItem } from "../data/types";
 import {
-  pantry,
   increaseItem,
   decreaseItem,
   deleteItem,
@@ -25,18 +24,20 @@ export function displayParsedResults(parsed: any[]) {
   if (!container) return;
 
   container.innerHTML = `
-    <h3>Parsed Items (${parsed.length})</h3>
+  <h3>Parsed Items (${parsed.length})</h3>
+  <ul class="parsed-list">
     ${parsed
       .map(
         (item) => `
-        <div class="parsed-item">
-          <strong>${item.qty}× ${item.name}</strong><br>
-          <span>${item.price}</span>
-        </div>
-      `
+        <li>
+          <strong>${item.qty}× ${item.name}</strong>
+          <span class="price">${item.price}</span>
+        </li>
+        `
       )
       .join("")}
-  `;
+  </ul>
+`;
 }
 
 /* ------------------------------------------
