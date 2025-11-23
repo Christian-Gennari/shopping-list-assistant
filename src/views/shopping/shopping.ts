@@ -12,7 +12,7 @@ import {
 
 import { getSimpleAISuggestions } from "../../ai/simpleSuggestions";
 
-export function initView() {
+export async function initView() {
   renderRestock();
   setupAI();
   setupCustomAdd();
@@ -73,33 +73,45 @@ function setupAI() {
   const btn = document.getElementById("ai-generate")!;
   const container = document.getElementById("ai-list")!;
 
-  btn.addEventListener("click", () => {
+  // FIX 1: callback must be async
+  btn.addEventListener("click", async () => {
+    // FIX 2: use preferences not prefs
     const pantry = loadPantry().items;
     const history = loadPurchaseHistory();
 
-    const suggestions = getSimpleAISuggestions(pantry, history, preferences);
+    try {
+      // FIX 3: Await the Promise
+      const suggestions = await getSimpleAISuggestions(
+        pantry,
+        history,
+        preferences
+      );
 
-    container.innerHTML = "";
+      container.innerHTML = "";
 
-    suggestions.forEach((name) => {
-      const div = document.createElement("div");
-      div.className = "shopping-item";
+      suggestions.forEach((name: string) => {
+        const div = document.createElement("div");
+        div.className = "shopping-item";
 
-      div.innerHTML = `
+        div.innerHTML = `
         <span class="shopping-name">${name}</span>
         <button class="parse-btn" data-add>+ Add</button>
       `;
 
-      div.querySelector("[data-add]")?.addEventListener("click", () => {
-        addItemToShoppingList(name, "ai");
-        renderFinalList();
+        div.querySelector("[data-add]")?.addEventListener("click", () => {
+          addItemToShoppingList(name, "ai");
+          renderFinalList();
+        });
+
+        container.appendChild(div);
       });
 
-      container.appendChild(div);
-    });
-
-    if (suggestions.length === 0) {
-      container.innerHTML = `<p class="subtitle">No suggestions found.</p>`;
+      if (suggestions.length === 0) {
+        container.innerHTML = `<p class="subtitle">No suggestions found.</p>`;
+      }
+    } catch (err) {
+      container.innerHTML = `<p class="subtitle" style="color:red;">AI request failed</p>`;
+      console.error(err);
     }
   });
 }
