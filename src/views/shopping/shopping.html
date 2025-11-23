@@ -3,36 +3,50 @@
   <p class="subtitle">Automatically generated restock + AI Assistant suggestions</p>
 </div>
 
-<section class="shopping-source card-surface">
-  <h2>Auto-Restock Suggestions</h2>
-  <div id="restock-list"></div>
-</section>
+<div class="shopping-grid">
+  <!-- LEFT COLUMN: Restock + Manual add -->
+  <div class="shopping-column">
+    <section class="shopping-source card-surface">
+      <h2>Auto-Restock Suggestions</h2>
+      <div id="restock-list"></div>
+    </section>
 
-<section class="shopping-source card-surface">
-  <h2>AI Shopping Assistant</h2>
-
-  <div id="ai-chat" class="ai-chat-window"></div>
-
-  <div class="ai-input-row">
-    <input id="ai-input" type="text" placeholder="Ask the assistant anything...">
-    <button id="ai-send" class="parse-btn">Send</button>
+    <section class="shopping-source card-surface">
+      <h2>Add Custom Item</h2>
+      <div class="custom-add-row">
+        <input id="custom-input" type="text" placeholder="Enter item name">
+        <button id="custom-add" class="parse-btn">Add</button>
+      </div>
+    </section>
   </div>
-</section>
 
-<section class="shopping-source card-surface">
-  <h2>Add Custom Item</h2>
-  <div class="custom-add-row">
-    <input id="custom-input" type="text" placeholder="Enter item name">
-    <button id="custom-add" class="parse-btn">Add</button>
+  <!-- RIGHT COLUMN: AI chat + Final list -->
+  <div class="shopping-column">
+    <section class="shopping-source card-surface">
+      <div class="ai-header-row">
+        <h2>AI Shopping Assistant</h2>
+        <button id="ai-clear" class="ai-clear-btn" type="button">
+          <i class="fas fa-broom"></i>
+          <span>Clear</span>
+        </button>
+      </div>
+
+      <div id="ai-chat" class="ai-chat-window"></div>
+
+      <div class="ai-input-row">
+        <input id="ai-input" type="text" placeholder="Ask the assistant anything...">
+        <button id="ai-send" class="parse-btn">Send</button>
+      </div>
+    </section>
+
+    <section class="shopping-final card-surface">
+      <h2>Your Shopping List</h2>
+      <div id="shopping-list"></div>
+
+      <div class="shopping-actions">
+        <button id="export-shopping" class="parse-btn">Export JSON</button>
+        <button id="copy-shopping" class="parse-btn">Copy to Clipboard</button>
+      </div>
+    </section>
   </div>
-</section>
-
-<section class="shopping-final card-surface">
-  <h2>Your Shopping List</h2>
-  <div id="shopping-list"></div>
-
-  <div class="shopping-actions">
-    <button id="export-shopping" class="parse-btn">Export JSON</button>
-    <button id="copy-shopping" class="parse-btn">Copy to Clipboard</button>
-  </div>
-</section>
+</div>

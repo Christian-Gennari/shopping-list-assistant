@@ -1,14 +1,33 @@
-.shopping-source {
-  margin-top: 32px;
-  padding: 32px;
+/* LAYOUT FOR SHOPPING VIEW */
+.shopping-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.2fr);
+  gap: 24px;
+  margin-top: 24px;
 }
 
-.shopping-source h2 {
+.shopping-column {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.shopping-source {
+  padding: 24px;
+}
+
+.shopping-final {
+  padding: 24px;
+}
+
+.shopping-source h2,
+.shopping-final h2 {
   font-size: 1.4rem;
   font-weight: 600;
   margin-bottom: 16px;
 }
 
+/* RESTOCK + CUSTOM ADD */
 .custom-add-row {
   display: flex;
   gap: 12px;
@@ -22,11 +41,7 @@
   font-size: 1rem;
 }
 
-.shopping-final {
-  margin-top: 32px;
-  padding: 32px;
-}
-
+/* FINAL LIST */
 .shopping-item {
   display: flex;
   justify-content: space-between;
@@ -57,7 +72,39 @@
   display: flex;
   gap: 12px;
 }
+
 /* AI CHAT WINDOW */
+.ai-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.ai-clear-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.ai-clear-btn i {
+  font-size: 0.85rem;
+}
+
+.ai-clear-btn:hover {
+  background: rgba(0, 0, 0, 0.04);
+  color: var(--text-light);
+}
+
 .ai-chat-window {
   height: 260px;
   overflow-y: auto;
@@ -65,12 +112,13 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   background: #fdfdfd;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .ai-message {
   margin-bottom: 16px;
   line-height: 1.5;
+  font-size: 0.95rem;
 }
 
 .ai-message.user {
@@ -82,17 +130,142 @@
   color: var(--text);
 }
 
-.ai-suggestion {
-  display: inline-block;
-  margin-left: 8px;
+/* AI INPUT ROW */
+.ai-input-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
 }
 
-.ai-suggestion button {
-  background: var(--accent);
-  color: white;
-  border: none;
-  padding: 3px 8px;
-  font-size: 0.8rem;
+.ai-input-row input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid var(--border);
   border-radius: var(--radius-sm);
+  font-size: 1rem;
+}
+
+.ai-input-row .parse-btn {
+  margin-top: 0;
+  white-space: nowrap;
+}
+
+/* LOADING INDICATOR */
+.ai-loading {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.ai-loading-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: ai-bounce 0.8s infinite ease-in-out alternate;
+  opacity: 0.6;
+}
+
+.ai-loading-dot:nth-child(2) {
+  animation-delay: 0.12s;
+}
+
+.ai-loading-dot:nth-child(3) {
+  animation-delay: 0.24s;
+}
+
+@keyframes ai-bounce {
+  from {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+
+  to {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+/* SUGGESTION HIGHLIGHTING */
+.ai-suggestions-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.ai-suggestion {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(107, 157, 107, 0.12);
+  font-size: 0.85rem;
+  color: var(--text);
+}
+
+.ai-suggestion-name {
+  font-weight: 500;
+}
+
+.ai-suggestion-add {
+  border: none;
+  background: transparent;
+  color: var(--accent-hover);
+  font-weight: 700;
   cursor: pointer;
+  font-size: 0.8rem;
+  padding: 0;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .shopping-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ai-inline-suggestion {
+  position: relative;
+  cursor: pointer;
+  text-decoration: underline dotted rgba(107,157,107,0.4);
+  text-underline-offset: 3px;
+  padding: 0 2px;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.ai-inline-suggestion:hover {
+  text-decoration-color: rgba(107,157,107,0.8);
+}
+
+.ai-plus {
+  opacity: 0;
+  margin-left: 4px;
+  font-size: 0.9rem;
+  color: var(--accent-hover);
+  transition: opacity 0.15s ease;
+}
+
+.ai-inline-suggestion:hover .ai-plus {
+  opacity: 1;
+}
+
+.ai-inline-suggestion {
+  text-decoration: underline;
+  text-decoration-color: var(--accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
+}
+
+/* Hover = warmer tone + thicker underline */
+.ai-inline-suggestion:hover {
+  color: var(--accent-hover);
+  text-decoration-color: var(--accent-hover);
 }

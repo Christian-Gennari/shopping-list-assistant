@@ -72,27 +72,78 @@ function renderRestock() {
 function setupAIChat() {
   const chat = document.getElementById("ai-chat")!;
   const input = document.getElementById("ai-input") as HTMLInputElement;
-  const send = document.getElementById("ai-send")!;
+  const send = document.getElementById("ai-send") as HTMLButtonElement;
+  const clear = document.getElementById("ai-clear") as HTMLButtonElement | null;
 
-  send.addEventListener("click", async () => {
+  let loadingEl: HTMLDivElement | null = null;
+
+  clear?.addEventListener("click", () => {
+    chat.innerHTML = "";
+  });
+
+  async function sendMessage() {
     const text = input.value.trim();
-    if (!text) return;
+    if (!text || send.disabled) return;
 
     appendUserMessage(text);
     input.value = "";
+    setLoading(true);
+
+    const pantry = loadPantry().items;
+    const history = loadPurchaseHistory();
+
+    let reply: string | null = null;
 
     try {
-      const pantry = loadPantry().items;
-      const history = loadPurchaseHistory();
-
-      const reply = await getChatReply(text, pantry, history, preferences);
-
-      appendAssistantMessage(reply);
-      renderSuggestionsFromReply(reply);
+      reply = await getChatReply(text, pantry, history, preferences);
     } catch (err) {
+      console.error(err);
       appendAssistantMessage("[Error] Unable to reach AI.");
+    } finally {
+      setLoading(false);
+    }
+
+    if (reply) {
+      appendAssistantMessage(reply);
+    }
+  }
+
+  send.addEventListener("click", () => void sendMessage());
+
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      void sendMessage();
     }
   });
+
+  function setLoading(on: boolean) {
+    if (on) {
+      send.disabled = true;
+      input.disabled = true;
+
+      if (!loadingEl) {
+        loadingEl = document.createElement("div");
+        loadingEl.className = "ai-loading";
+        loadingEl.innerHTML = `
+          <span>Thinking</span>
+          <span class="ai-loading-dot"></span>
+          <span class="ai-loading-dot"></span>
+          <span class="ai-loading-dot"></span>
+        `;
+        chat.appendChild(loadingEl);
+        chat.scrollTop = chat.scrollHeight;
+      }
+    } else {
+      send.disabled = false;
+      input.disabled = false;
+
+      if (loadingEl && loadingEl.parentElement) {
+        loadingEl.parentElement.removeChild(loadingEl);
+      }
+      loadingEl = null;
+    }
+  }
 
   function appendUserMessage(msg: string) {
     const div = document.createElement("div");
@@ -102,39 +153,37 @@ function setupAIChat() {
     chat.scrollTop = chat.scrollHeight;
   }
 
+  /* -----------------------------------------
+     FORMATTED ASSISTANT MESSAGES
+  ----------------------------------------- */
   function appendAssistantMessage(msg: string) {
     const div = document.createElement("div");
     div.className = "ai-message assistant";
-    div.textContent = msg;
+
+    // Replace [item] → inline clickable highlighted item
+    const html = msg.replace(/\[([^\]]+)\]/g, (_, itemName) => {
+      return `
+      <span class="ai-inline-suggestion" data-item="${itemName}">
+        ${itemName}
+      </span>
+    `;
+    });
+
+    div.innerHTML = html;
     chat.appendChild(div);
     chat.scrollTop = chat.scrollHeight;
-  }
 
-  function renderSuggestionsFromReply(msg: string) {
-    const matches = [...msg.matchAll(/\[([^\]]+)\]/g)];
-
-    matches.forEach((match) => {
-      const itemName = match[1];
-
-      const button = document.createElement("button");
-      button.textContent = `Add ${itemName}`;
-      button.className = "parse-btn";
-      button.style.marginTop = "6px";
-
-      button.addEventListener("click", () => {
-        addItemToShoppingList(itemName, "ai");
+    // Add click handler for each suggestion
+    div.querySelectorAll(".ai-inline-suggestion").forEach((el) => {
+      el.addEventListener("click", () => {
+        const name = (el as HTMLElement).dataset.item!;
+        addItemToShoppingList(name, "ai");
         renderFinalList();
       });
-
-      const wrap = document.createElement("div");
-      wrap.className = "ai-suggestion";
-      wrap.appendChild(button);
-
-      chat.appendChild(wrap);
-      chat.scrollTop = chat.scrollHeight;
     });
   }
 }
+
 /* -----------------------------------------------
    3. CUSTOM ADD
 ------------------------------------------------ */

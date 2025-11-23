@@ -1,5 +1,5 @@
 // FILE: src/data/pantry.ts
-import type { PantryItem, Pantry } from "./types";
+import type { Pantry } from "./types";
 
 const PANTRY_KEY = "grocerai-pantry";
 
