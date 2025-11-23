@@ -27,7 +27,7 @@ import {
 console.log("GrocerAI App Loaded");
 
 /* ------------------------------------------
-   Sidebar view switching
+   VIEW SWITCHING
 ------------------------------------------- */
 document.querySelectorAll(".sidebar a").forEach((link) => {
   link.addEventListener("click", (e) => {
@@ -48,22 +48,29 @@ document.querySelectorAll(".sidebar a").forEach((link) => {
       .forEach((section) => section.classList.add("hidden"));
 
     // Show selected view
-    document
-      .querySelector(`.view[data-view="${view}"]`)
-      ?.classList.remove("hidden");
+    const target = document.querySelector(`.view[data-view="${view}"]`);
+    target?.classList.remove("hidden");
 
-    // Load history on switch
+    // Render content for that view
+    if (view === "pantry") {
+      displayPantry(pantry.items);
+    }
+
     if (view === "history") {
       const entries = loadPurchaseHistory();
       displayHistory(entries);
     }
+
+    // Import view: no auto-render needed, stays clean
   });
 });
 
 /* ------------------------------------------
-   Initial render
+   Initial render (default = pantry)
 ------------------------------------------- */
 displayPantry(pantry.items);
+// Initialize preferences screen
+initPreferencesUI();
 
 /* ------------------------------------------
    Parse Foodora HTML
@@ -113,3 +120,62 @@ importFileInput.addEventListener("change", async (e) => {
   displayPantry(pantry.items);
   alert("Pantry imported successfully.");
 });
+
+import { preferences, updatePreference } from "./data/preferences";
+
+function initPreferencesUI() {
+  (document.getElementById("pref-vegetarian") as HTMLInputElement).checked =
+    preferences.vegetarian;
+
+  (document.getElementById("pref-restockWindow") as HTMLInputElement).value =
+    preferences.autoRestockWindowDays.toString();
+
+  (document.getElementById("pref-autoAddRestock") as HTMLInputElement).checked =
+    preferences.autoAddRestock;
+
+  (document.getElementById("pref-aiSuggestions") as HTMLInputElement).checked =
+    preferences.aiSuggestions;
+
+  (document.getElementById("pref-aiLimit") as HTMLInputElement).value =
+    preferences.aiSuggestionLimit.toString();
+
+  setupPrefListeners();
+}
+
+function setupPrefListeners() {
+  document
+    .getElementById("pref-vegetarian")
+    ?.addEventListener("change", (e) =>
+      updatePreference("vegetarian", (e.target as HTMLInputElement).checked)
+    );
+
+  document
+    .getElementById("pref-restockWindow")
+    ?.addEventListener("change", (e) =>
+      updatePreference(
+        "autoRestockWindowDays",
+        Number((e.target as HTMLInputElement).value)
+      )
+    );
+
+  document
+    .getElementById("pref-autoAddRestock")
+    ?.addEventListener("change", (e) =>
+      updatePreference("autoAddRestock", (e.target as HTMLInputElement).checked)
+    );
+
+  document
+    .getElementById("pref-aiSuggestions")
+    ?.addEventListener("change", (e) =>
+      updatePreference("aiSuggestions", (e.target as HTMLInputElement).checked)
+    );
+
+  document
+    .getElementById("pref-aiLimit")
+    ?.addEventListener("change", (e) =>
+      updatePreference(
+        "aiSuggestionLimit",
+        Number((e.target as HTMLInputElement).value)
+      )
+    );
+}

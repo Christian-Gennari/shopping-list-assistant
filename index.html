@@ -18,14 +18,24 @@
       <h2 class="logo">GrocerAI</h2>
 
       <nav>
-        <a href="#" class="active" data-view="dashboard">
-          <i class="fas fa-chart-line"></i>
-          <span>Dashboard</span>
+        <a href="#" class="active" data-view="pantry">
+          <i class="fas fa-basket-shopping"></i>
+          <span>Pantry</span>
+        </a>
+
+        <a href="#" data-view="import">
+          <i class="fas fa-file-import"></i>
+          <span>Import</span>
         </a>
 
         <a href="#" data-view="history">
           <i class="fas fa-clock-rotate-left"></i>
           <span>History</span>
+        </a>
+
+        <a href="#" data-view="preferences">
+          <i class="fas fa-sliders"></i>
+          <span>Preferences</span>
         </a>
       </nav>
     </aside>
@@ -33,25 +43,28 @@
     <!-- Main Content -->
     <main class="content">
 
-      <!-- DASHBOARD VIEW -->
-      <section class="view" data-view="dashboard">
-
+      <!-- ========== PANTRY VIEW ========== -->
+      <section class="view" data-view="pantry">
         <div class="content-header">
           <h1>Your Pantry</h1>
-          <p class="subtitle">Manage items and import new orders</p>
+          <p class="subtitle">Manage your home inventory</p>
         </div>
 
-        <!-- Pantry List -->
         <section class="pantry-section">
           <h2>Current Items</h2>
           <div id="pantry-items" class="pantry-list"></div>
         </section>
+      </section>
 
-        <!-- Import Section -->
+
+      <!-- ========== IMPORT VIEW ========== -->
+      <section class="view hidden" data-view="import">
+        <div class="content-header">
+          <h1>Import Items</h1>
+          <p class="subtitle">Paste Foodora checkout HTML and import items into your pantry</p>
+        </div>
+
         <section class="import-section">
-          <h2>Import Foodora Checkout</h2>
-          <p class="subtitle">Paste your checkout page HTML below</p>
-
           <textarea id="htmlInput" placeholder="Paste Foodora HTML here..."></textarea>
 
           <button id="parseButton" class="parse-btn">Parse Items</button>
@@ -63,15 +76,52 @@
             <input type="file" id="importFile" accept=".json">
           </div>
         </section>
-
       </section>
 
-      <!-- HISTORY VIEW -->
+
+      <!-- ========== HISTORY VIEW ========== -->
       <section class="view hidden" data-view="history">
-        <h1>Purchase History</h1>
-        <p class="subtitle">Your past imported Foodora orders</p>
+        <div class="content-header">
+          <h1>Purchase History</h1>
+          <p class="subtitle">Your past imported Foodora orders</p>
+        </div>
 
         <div id="history-list" class="history-list"></div>
+      </section>
+
+      <!-- ========== PREFERENCES/OPTIONS VIEW ========== -->
+      <section class="view hidden" data-view="preferences">
+        <h1>Preferences</h1>
+        <p class="subtitle">Customize how GrocerAI behaves</p>
+
+        <div class="preferences-section">
+
+          <label class="pref-toggle">
+            <span>Vegetarian</span>
+            <input type="checkbox" id="pref-vegetarian">
+          </label>
+
+          <label class="pref-number">
+            <span>Restock window (days)</span>
+            <input type="number" id="pref-restockWindow" min="1" max="365">
+          </label>
+
+          <label class="pref-toggle">
+            <span>Auto-add restock items</span>
+            <input type="checkbox" id="pref-autoAddRestock">
+          </label>
+
+          <label class="pref-toggle">
+            <span>Enable AI suggestions</span>
+            <input type="checkbox" id="pref-aiSuggestions">
+          </label>
+
+          <label class="pref-number">
+            <span>Max AI suggestions</span>
+            <input type="number" id="pref-aiLimit" min="1" max="50">
+          </label>
+
+        </div>
       </section>
 
     </main>
