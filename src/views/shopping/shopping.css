@@ -57,3 +57,42 @@
   display: flex;
   gap: 12px;
 }
+/* AI CHAT WINDOW */
+.ai-chat-window {
+  height: 260px;
+  overflow-y: auto;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: #fdfdfd;
+  margin-bottom: 12px;
+}
+
+.ai-message {
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.ai-message.user {
+  text-align: right;
+  color: var(--text);
+}
+
+.ai-message.assistant {
+  color: var(--text);
+}
+
+.ai-suggestion {
+  display: inline-block;
+  margin-left: 8px;
+}
+
+.ai-suggestion button {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 3px 8px;
+  font-size: 0.8rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}

@@ -10,11 +10,11 @@ import {
   removeItem,
 } from "../../data/shoppingList";
 
-import { getSimpleAISuggestions } from "../../ai/simpleSuggestions";
+import { getChatReply } from "../../ai/chatAssistant";
 
 export async function initView() {
   renderRestock();
-  setupAI();
+  setupAIChat();
   setupCustomAdd();
   renderFinalList();
 }
@@ -67,55 +67,74 @@ function renderRestock() {
 }
 
 /* -----------------------------------------------
-   2. AI SUGGESTIONS
+   2. AI CHAT ASSISTANT
 ------------------------------------------------ */
-function setupAI() {
-  const btn = document.getElementById("ai-generate")!;
-  const container = document.getElementById("ai-list")!;
+function setupAIChat() {
+  const chat = document.getElementById("ai-chat")!;
+  const input = document.getElementById("ai-input") as HTMLInputElement;
+  const send = document.getElementById("ai-send")!;
 
-  // FIX 1: callback must be async
-  btn.addEventListener("click", async () => {
-    // FIX 2: use preferences not prefs
-    const pantry = loadPantry().items;
-    const history = loadPurchaseHistory();
+  send.addEventListener("click", async () => {
+    const text = input.value.trim();
+    if (!text) return;
+
+    appendUserMessage(text);
+    input.value = "";
 
     try {
-      // FIX 3: Await the Promise
-      const suggestions = await getSimpleAISuggestions(
-        pantry,
-        history,
-        preferences
-      );
+      const pantry = loadPantry().items;
+      const history = loadPurchaseHistory();
 
-      container.innerHTML = "";
+      const reply = await getChatReply(text, pantry, history, preferences);
 
-      suggestions.forEach((name: string) => {
-        const div = document.createElement("div");
-        div.className = "shopping-item";
-
-        div.innerHTML = `
-        <span class="shopping-name">${name}</span>
-        <button class="parse-btn" data-add>+ Add</button>
-      `;
-
-        div.querySelector("[data-add]")?.addEventListener("click", () => {
-          addItemToShoppingList(name, "ai");
-          renderFinalList();
-        });
-
-        container.appendChild(div);
-      });
-
-      if (suggestions.length === 0) {
-        container.innerHTML = `<p class="subtitle">No suggestions found.</p>`;
-      }
+      appendAssistantMessage(reply);
+      renderSuggestionsFromReply(reply);
     } catch (err) {
-      container.innerHTML = `<p class="subtitle" style="color:red;">AI request failed</p>`;
-      console.error(err);
+      appendAssistantMessage("[Error] Unable to reach AI.");
     }
   });
-}
 
+  function appendUserMessage(msg: string) {
+    const div = document.createElement("div");
+    div.className = "ai-message user";
+    div.textContent = msg;
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  function appendAssistantMessage(msg: string) {
+    const div = document.createElement("div");
+    div.className = "ai-message assistant";
+    div.textContent = msg;
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  function renderSuggestionsFromReply(msg: string) {
+    const matches = [...msg.matchAll(/\[([^\]]+)\]/g)];
+
+    matches.forEach((match) => {
+      const itemName = match[1];
+
+      const button = document.createElement("button");
+      button.textContent = `Add ${itemName}`;
+      button.className = "parse-btn";
+      button.style.marginTop = "6px";
+
+      button.addEventListener("click", () => {
+        addItemToShoppingList(itemName, "ai");
+        renderFinalList();
+      });
+
+      const wrap = document.createElement("div");
+      wrap.className = "ai-suggestion";
+      wrap.appendChild(button);
+
+      chat.appendChild(wrap);
+      chat.scrollTop = chat.scrollHeight;
+    });
+  }
+}
 /* -----------------------------------------------
    3. CUSTOM ADD
 ------------------------------------------------ */
