@@ -1,0 +1,45 @@
+.preferences-section {
+  margin-top: 32px;
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.preferences-section label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.preferences-section label:last-child {
+  border-bottom: none;
+}
+
+.pref-toggle input[type="checkbox"] {
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+}
+
+.pref-number input[type="number"] {
+  width: 80px;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  font-size: 0.95rem;
+  background: #f8faf8;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.pref-number input[type="number"]:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(107,157,107,0.15);
+}

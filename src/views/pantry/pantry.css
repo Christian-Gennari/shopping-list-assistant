@@ -1,0 +1,68 @@
+.pantry-section {
+  margin-top: 48px;
+  padding: 32px;
+}
+
+.pantry-section h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.pantry-item {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pantry-item:last-child {
+  border-bottom: none;
+}
+
+.pantry-qty {
+  font-weight: 700;
+  color: var(--accent);
+  margin-right: 8px;
+}
+
+.pantry-name {
+  font-size: 1rem;
+  color: var(--text);
+}
+
+.pantry-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.pantry-btn {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.15s;
+  box-shadow: var(--shadow-sm);
+}
+
+.pantry-btn:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+.pantry-btn.delete {
+  background: #b33939;
+}
+
+.pantry-btn.delete:hover {
+  background: #9c2c2c;
+}

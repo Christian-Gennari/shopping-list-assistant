@@ -1,0 +1,52 @@
+.history-list {
+  margin-top: 32px;
+  padding: 32px;
+}
+
+.history-empty {
+  color: var(--text-light);
+  font-size: 0.95rem;
+  padding: 8px 0;
+}
+
+.history-entry {
+  padding: 20px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.history-entry:last-child {
+  border-bottom: none;
+}
+
+.history-entry h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+  letter-spacing: -0.3px;
+}
+
+.history-entry ul {
+  list-style: none;
+  padding-left: 0;
+  margin-top: 10px;
+}
+
+.history-entry li {
+  font-size: 0.95rem;
+  color: var(--text-light);
+  padding: 4px 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.history-item-name {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.history-item-price {
+  color: var(--accent);
+  font-weight: 600;
+  margin-left: 12px;
+}
